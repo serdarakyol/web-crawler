@@ -22,10 +22,3 @@ jobs:
       run: pip install -r requirements.txt
     - name: Send request
       run: python3 main.py -l 'https://news.ycombinator.com/'
-    - name: Save generated report file
-        run: |
-          mkdir -p ${{RUNNER_TEMP}}
-          cp output.csv ${{RUNNER_TEMP}}
-        artifacts:
-          name: output
-          path: ${{RUNNER_TEMP}}
