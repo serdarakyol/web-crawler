@@ -26,7 +26,5 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: save generated data
-          path: dist/demo-report.tar.gz
+          path: /home/runner/work/web-crawler/web-crawler/output.csv
           retention-days: 1
-    - name: Check if the file generate
-      run: [ -s /home/runner/work/web-crawler/web-crawler/output.csv ] && echo "The file genereted successfully || echo "Report could not generated!"
