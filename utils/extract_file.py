@@ -10,6 +10,7 @@ class JsonToCsv:
             self.output_dir = getcwd()
 
     def generate_csv(self) -> None:
+        print(self.filename)
         field_names = list(self.json_object.keys())
         rows = zip(self.json_object["Title"], self.json_object["Point"], self.json_object["Rank"], self.json_object["Total Command"])
         with open(f"{self.output_dir}/{self.filename}", "w", newline="") as file:
