@@ -3,11 +3,12 @@ from .base_crawler import BaseCrawler
 from bs4 import BeautifulSoup
 from .enum import DataEntry
 import sys
-# number of the order
-# number of comments
+
 class CustomCrawler(BaseCrawler):
 
-    def __init__(self, link: str, page: int) -> None:
+    def __init__(self, link: str, page: int = 1) -> None:
+        if page != 1 and page is not None:
+            link += "?p=" + page
         super().__init__(link, page)
         self.result = {
             DataEntry.Title.value: list[str],
@@ -23,7 +24,7 @@ class CustomCrawler(BaseCrawler):
             case DataEntry.Point:
                 all_tags = list(int(tg.get_text(strip=True).replace(" points", "")) for tg in tags)
             case DataEntry.Rank:
-                print("RANK")
+                all_tags = list(int(tg.get_text(strip=True).split('.')[0]) for tg in tags)
             case DataEntry.TotalCommand:
                 # this will extract only the numbers from string because text contain \ character
                 all_tags = list(tg.get_text(strip=True).split('|')[-1].replace("xa0comments", "").split()[0] for tg in tags)
@@ -50,13 +51,18 @@ class CustomCrawler(BaseCrawler):
         span_tags = soup.find_all('span', class_='subline')
         self.extract_and_check(span_tags, DataEntry.TotalCommand)
 
-    def start(self):
+    def extract_order(self, soup:BeautifulSoup) -> None:
+        span_tags = soup.find_all('span', class_='rank')
+        self.extract_and_check(span_tags, DataEntry.Rank)
+
+    def start(self) -> dict:
         response = get(self.link) 
         if response.status_code == 200:
             soup = BeautifulSoup(response.text, 'lxml')
             self.extract_titles(soup)
             self.extract_points(soup)
             self.extract_total_command(soup)
+            self.extract_order(soup)
         else: 
             print("FAIL", response.status_code)
-        print(self.result)
+        return self.result
