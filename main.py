@@ -4,7 +4,7 @@ from argparse import ArgumentParser
 
 if __name__ == "__main__":
     parser = ArgumentParser()
-    parser.add_argument('-l', '--link', help='Link of website', required=True)
+    parser.add_argument('-l', '--link', help='Link of website (required)', required=True)
     parser.add_argument('-p', '--page', help='Number of page')
     parser.add_argument('-o', '--output', help='Output file directory')
     parser.add_argument('-f', '--filename', help='Name of the file to be generated')
