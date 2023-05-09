@@ -2,6 +2,7 @@ from requests import get
 from .base_crawler import BaseCrawler
 from bs4 import BeautifulSoup
 from .enum import DataEntry
+import sys
 # number of the order
 # number of comments
 class CustomCrawler(BaseCrawler):
@@ -12,7 +13,7 @@ class CustomCrawler(BaseCrawler):
             DataEntry.Title.value: list[str],
             DataEntry.Point.value: list[int],
             DataEntry.Rank.value: list[int],
-            DataEntry.TotalCommand.value: list[int]
+            DataEntry.TotalCommand.value: list[str]
         }
 
     def extract_and_check(self, tags:BeautifulSoup, type:str) -> None:
@@ -24,7 +25,11 @@ class CustomCrawler(BaseCrawler):
             case DataEntry.Rank:
                 print("RANK")
             case DataEntry.TotalCommand:
-                print("TOTAL COMMAND")
+                # this will extract only the numbers from string because text contain \ character
+                all_tags = list(tg.get_text(strip=True).split('|')[-1].replace("xa0comments", "").split()[0] for tg in tags)
+            case _:
+                print("This option is no valid=", type)
+                sys.exit(1)
 
         # check if all tags extracted
         if len(all_tags) == 30:
@@ -40,6 +45,10 @@ class CustomCrawler(BaseCrawler):
     def extract_points(self, soup:BeautifulSoup) -> None:
         span_tags = soup.find_all('span', class_='score')
         self.extract_and_check(span_tags, DataEntry.Point)
+    
+    def extract_total_command(self, soup:BeautifulSoup) -> None:
+        span_tags = soup.find_all('span', class_='subline')
+        self.extract_and_check(span_tags, DataEntry.TotalCommand)
 
     def start(self):
         response = get(self.link) 
@@ -47,6 +56,7 @@ class CustomCrawler(BaseCrawler):
             soup = BeautifulSoup(response.text, 'lxml')
             self.extract_titles(soup)
             self.extract_points(soup)
+            self.extract_total_command(soup)
         else: 
             print("FAIL", response.status_code)
         print(self.result)
