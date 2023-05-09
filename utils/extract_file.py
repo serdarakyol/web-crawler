@@ -2,12 +2,14 @@ import csv
 from os import getcwd
 
 class JsonToCsv:
-    def __init__(self, json_object:dict, output_dir:str, filename:str = "output.csv") -> None:
+    def __init__(self, json_object: dict, output_dir: str, filename: str) -> None:
         self.json_object = json_object
         self.output_dir = output_dir
         self.filename = filename
         if output_dir is None:
             self.output_dir = getcwd()
+        if filename is None:
+            self.filename = "output.csv"
 
     def generate_csv(self) -> None:
         print(self.filename)
