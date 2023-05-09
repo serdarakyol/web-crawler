@@ -23,8 +23,9 @@ jobs:
     - name: Send request
       run: python3 main.py -l 'https://news.ycombinator.com/'
     - name: Save generated report file
-        uses: actions/upload-artifact@v3
-        with:
-          name: save generated data
-          path: /home/runner/work/web-crawler/web-crawler/output.csv
-          retention-days: 1
+        run: |
+          mkdir -p ${{RUNNER_TEMP}}
+          cp output.csv ${{RUNNER_TEMP}}
+        artifacts:
+          name: output
+          path: ${{RUNNER_TEMP}}
