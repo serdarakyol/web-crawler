@@ -13,6 +13,7 @@ jobs:
   default:
     runs-on: ubuntu-latest
     steps:
-      name: Send request
-      run: python3 main.py -l 'https://news.ycombinator.com/'
-      name: Check if the file generated and has size
+      - name: Pull repository
+        uses: actions/checkout@v3
+      - name: Send request
+        run: python3 main.py -l 'https://news.ycombinator.com/'
