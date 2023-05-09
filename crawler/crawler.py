@@ -7,6 +7,7 @@ import sys
 class CustomCrawler(BaseCrawler):
 
     def __init__(self, link: str, page: int = 1) -> None:
+        # override link if not default
         if page != 1 and page is not None:
             link += "?p=" + page
         super().__init__(link, page)
